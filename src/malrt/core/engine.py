@@ -54,12 +54,14 @@ def normalize_indicator(raw: str) -> Indicator:
 async def submit_indicator(
     raw: str,
     reporter_names: list[str] | None = None,
+    notes: str = "",
 ) -> Submission:
     """Normalize, persist, and dispatch indicator to reporters."""
     indicator = normalize_indicator(raw)
 
     sub = Submission(
         indicator=indicator,
+        notes=notes,
         status=SubmissionStatus.pending,
     )
     await create_submission(sub)

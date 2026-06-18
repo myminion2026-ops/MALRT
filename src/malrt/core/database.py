@@ -25,6 +25,7 @@ CREATE TABLE IF NOT EXISTS submissions (
     indicator_type TEXT NOT NULL,
     indicator_value TEXT NOT NULL,
     raw_value TEXT NOT NULL,
+    notes TEXT NOT NULL DEFAULT '',
     status TEXT NOT NULL,
     created_at TEXT NOT NULL,
     updated_at TEXT NOT NULL
@@ -40,22 +41,32 @@ CREATE TABLE IF NOT EXISTS submission_results (
 );
 """
 
+_MIGRATIONS = [
+    "ALTER TABLE submissions ADD COLUMN notes TEXT NOT NULL DEFAULT ''",
+]
+
 
 async def init_db() -> None:
     async with aiosqlite.connect(_db_path()) as db:
         await db.executescript(_DDL)
+        for stmt in _MIGRATIONS:
+            try:
+                await db.execute(stmt)
+            except Exception:
+                pass  # column already exists
         await db.commit()
 
 
 async def create_submission(sub: Submission) -> Submission:
     async with aiosqlite.connect(_db_path()) as db:
         await db.execute(
-            "INSERT INTO submissions VALUES (?,?,?,?,?,?,?)",
+            "INSERT INTO submissions VALUES (?,?,?,?,?,?,?,?)",
             (
                 sub.id,
                 sub.indicator.type.value,
                 sub.indicator.value,
                 sub.indicator.raw_value,
+                sub.notes,
                 sub.status.value,
                 sub.created_at,
                 sub.updated_at,
@@ -101,6 +112,16 @@ async def update_submission_status(
         await db.execute(
             "UPDATE submissions SET status=?, updated_at=? WHERE id=?",
             (status.value, now, sub_id),
+        )
+        await db.commit()
+
+
+async def update_notes(sub_id: str, notes: str) -> None:
+    now = datetime.now(timezone.utc).isoformat()
+    async with aiosqlite.connect(_db_path()) as db:
+        await db.execute(
+            "UPDATE submissions SET notes=?, updated_at=? WHERE id=?",
+            (notes, now, sub_id),
         )
         await db.commit()
 
@@ -157,6 +178,7 @@ def _row_to_submission(row: aiosqlite.Row, results: list[SubmissionResult]) -> S
             value=row["indicator_value"],
             raw_value=row["raw_value"],
         ),
+        notes=row["notes"] if "notes" in row.keys() else "",
         created_at=row["created_at"],
         updated_at=row["updated_at"],
         status=SubmissionStatus(row["status"]),

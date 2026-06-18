@@ -20,6 +20,7 @@ def setup_db(tmp_path, monkeypatch):
             indicator_type TEXT NOT NULL,
             indicator_value TEXT NOT NULL,
             raw_value TEXT NOT NULL,
+            notes TEXT NOT NULL DEFAULT '',
             status TEXT NOT NULL,
             created_at TEXT NOT NULL,
             updated_at TEXT NOT NULL
@@ -93,3 +94,29 @@ def test_providers_endpoint(client):
     assert resp.status_code == 200
     providers = resp.json()
     assert any(p["name"] == "virustotal" for p in providers)
+
+
+def test_submit_with_notes(client):
+    resp = client.post("/api/submit", json={
+        "indicator": "evil.com",
+        "notes": "Found in phishing email to accounting dept",
+    })
+    assert resp.status_code == 200
+    data = resp.json()
+    assert data["notes"] == "Found in phishing email to accounting dept"
+
+
+def test_update_notes(client):
+    post_resp = client.post("/api/submit", json={"indicator": "bad.com"})
+    sub_id = post_resp.json()["id"]
+
+    # Update notes
+    patch_resp = client.patch(f"/api/submissions/{sub_id}/notes", json={
+        "notes": "Confirmed malicious via manual analysis"
+    })
+    assert patch_resp.status_code == 200
+    assert patch_resp.json()["ok"] is True
+
+    # Verify notes persisted
+    get_resp = client.get(f"/api/submissions/{sub_id}")
+    assert get_resp.json()["notes"] == "Confirmed malicious via manual analysis"

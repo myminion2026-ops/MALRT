@@ -108,6 +108,28 @@ header .subtitle {
 .submit-bar button:hover { opacity: 0.9; }
 .submit-bar button:disabled { opacity: 0.5; cursor: not-allowed; }
 
+/* Notes bar */
+.notes-bar {
+    margin-bottom: 24px;
+}
+
+.notes-bar textarea {
+    width: 100%;
+    padding: 10px 14px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--text);
+    font-size: 0.85rem;
+    font-family: inherit;
+    resize: vertical;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.notes-bar textarea:focus { border-color: var(--accent); }
+.notes-bar textarea::placeholder { color: var(--text-muted); }
+
 /* Table */
 .submissions-table {
     width: 100%;
@@ -232,3 +254,53 @@ header .subtitle {
 }
 
 .empty-state .icon { font-size: 2rem; margin-bottom: 8px; }
+
+/* Notes indicator in table */
+.notes-icon {
+    color: var(--text-muted);
+    font-size: 0.8rem;
+    margin-left: 4px;
+}
+
+/* Notes section in detail panel */
+.notes-section {
+    margin-bottom: 16px;
+}
+
+.notes-section label {
+    display: block;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    margin-bottom: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.notes-section textarea {
+    width: 100%;
+    padding: 8px 12px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    color: var(--text);
+    font-size: 0.85rem;
+    font-family: inherit;
+    resize: vertical;
+    outline: none;
+    min-height: 60px;
+}
+
+.notes-section textarea:focus { border-color: var(--accent); }
+
+.notes-save-btn {
+    margin-top: 4px;
+    padding: 4px 12px;
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    cursor: pointer;
+}
+
+.notes-save-btn:hover { opacity: 0.9; }

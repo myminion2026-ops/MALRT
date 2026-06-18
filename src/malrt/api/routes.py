@@ -18,14 +18,31 @@ router = APIRouter()
 
 class SubmitRequest(BaseModel):
     indicator: str
+    notes: str = ""
     reporters: list[str] | None = None
+
+
+class NotesRequest(BaseModel):
+    notes: str
 
 
 @router.post("/submit")
 async def api_submit(req: SubmitRequest):
     """Submit an indicator (URL, domain, IP, hash) for reporting."""
-    result = await submit_indicator(req.indicator, req.reporters)
+    result = await submit_indicator(req.indicator, req.reporters, notes=req.notes)
     return result.model_dump()
+
+
+@router.patch("/submissions/{submission_id}/notes")
+async def api_update_notes(submission_id: str, req: NotesRequest):
+    """Update notes on an existing submission."""
+    from malrt.core.database import update_notes
+
+    sub = await get_submission_detail(submission_id)
+    if not sub:
+        raise HTTPException(status_code=404, detail="Submission not found")
+    await update_notes(submission_id, req.notes)
+    return {"ok": True}
 
 
 @router.get("/submissions")

@@ -43,6 +43,7 @@ class SubmissionResult(BaseModel):
 class Submission(BaseModel):
     id: str = Field(default_factory=lambda: uuid.uuid4().hex)
     indicator: Indicator
+    notes: str = ""
     created_at: str = Field(
         default_factory=lambda: datetime.now(timezone.utc).isoformat()
     )
