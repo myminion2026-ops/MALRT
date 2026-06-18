@@ -1,0 +1,30 @@
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "malrt"
+version = "0.1.0"
+description = "Malware & Abuse Liaison Reporting Tool"
+readme = "README.md"
+license = {text = "MIT"}
+requires-python = ">=3.11"
+dependencies = [
+    "fastapi>=0.115.0",
+    "uvicorn[standard]>=0.30.0",
+    "aiosqlite>=0.20.0",
+    "pydantic>=2.0",
+    "pydantic-settings>=2.0",
+    "python-multipart>=0.0.9",
+    "httpx>=0.27.0",
+    "typer[all]>=0.12.0",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8.0", "httpx>=0.27.0"]
+
+[project.scripts]
+malrt = "malrt.cli:app"
+
+[tool.setuptools.packages.find]
+where = ["src"]

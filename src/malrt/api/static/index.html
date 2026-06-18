@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MALRT — Malware & Abuse Liaison Reporting Tool</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div>
+                <h1>⚡ M.A.L.R.T</h1>
+                <div class="subtitle">Malware & Abuse Liaison Reporting Tool</div>
+            </div>
+            <div class="providers" id="providers"></div>
+        </header>
+
+        <form class="submit-bar" id="submit-form">
+            <input type="text" id="indicator-input"
+                   placeholder="Paste a URL, domain, IP address, or file hash..."
+                   autocomplete="off" spellcheck="false" autofocus>
+            <button type="submit" id="submit-btn">Submit</button>
+        </form>
+
+        <table class="submissions-table" id="submissions-table">
+            <thead>
+                <tr>
+                    <th>Indicator</th>
+                    <th>Type</th>
+                    <th>Status</th>
+                    <th>Results</th>
+                    <th>Submitted</th>
+                </tr>
+            </thead>
+            <tbody id="submissions-body">
+            </tbody>
+        </table>
+
+        <div class="empty-state" id="empty-state">
+            <div class="icon">🛡️</div>
+            <div>No submissions yet. Paste an indicator above to get started.</div>
+        </div>
+
+        <div class="detail-panel" id="detail-panel">
+            <div class="detail-header">
+                <h3 id="detail-title">Submission Detail</h3>
+                <button class="detail-close" id="detail-close">✕</button>
+            </div>
+            <div id="detail-content"></div>
+        </div>
+    </div>
+
+    <script src="/static/app.js"></script>
+</body>
+</html>
